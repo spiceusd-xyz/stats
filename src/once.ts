@@ -67,9 +67,14 @@ const writeTree = (parentDir: string, tree: Tree) => {
   );
 
   const v2Stats = {
-    ...v2MainnetStats,
-    testnet: {
-      sepolia: v2SepoliaStats
+    mainnet: {
+      ...v2MainnetStats
+    },
+    sepolia: {
+      ...v2SepoliaStats
+    },
+    blast: {
+      ...v2BlastStats
     }
   };
 
@@ -83,7 +88,7 @@ const writeTree = (parentDir: string, tree: Tree) => {
     JSON.stringify(v2SepoliaStats, null, 2)
   );
   fs.writeFileSync(
-    path.join(OUTPUT_DIR_V2, "testnet", "blast.json"),
+    path.join(OUTPUT_DIR_V2, "blast.json"),
     JSON.stringify(v2BlastStats, null, 2)
   );
   console.log("v2 stats:", util.inspect(v2Stats, { colors: true, depth: null }));
