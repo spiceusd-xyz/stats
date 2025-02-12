@@ -3,7 +3,7 @@ import type { BigNumber } from "@ethersproject/bignumber";
 import { AddressZero } from "@ethersproject/constants";
 import { resolveProperties } from "@ethersproject/properties";
 import { Decimal } from "@liquity/lib-base";
-import { DUNE_SPV2_AVERAGE_APY_URL_MAINNET, DUNE_SPV2_AVERAGE_APY_URL_SEPOLIA } from "../constants";
+import { DUNE_URLS } from "../constants";
 
 import { duneFetch, type DuneResponse, isDuneResponse } from "../dune";
 import { getContracts, LiquityV2BranchContracts, type LiquityV2Deployment } from "./contracts";
@@ -80,11 +80,9 @@ const fetchSpAverageApysFromDune = async ({
 }: {
   branches: LiquityV2BranchContracts[];
   apiKey: string;
-  network: "mainnet" | "sepolia";
+  network: "mainnet" | "sepolia" | "blast";
 }) => {
-  const url = network === "sepolia"
-    ? DUNE_SPV2_AVERAGE_APY_URL_SEPOLIA
-    : DUNE_SPV2_AVERAGE_APY_URL_MAINNET;
+  const url = DUNE_URLS[network]
 
   // disabled when DUNE_SPV2_AVERAGE_APY_URL_* is null
   if (!url) {
@@ -118,7 +116,7 @@ export const fetchV2Stats = async ({
   deployment,
   blockTag = "latest"
 }: {
-  network: "mainnet" | "sepolia";
+  network: "mainnet" | "sepolia" | "blast";
   provider: Provider;
   duneApiKey: string;
   deployment: LiquityV2Deployment;
@@ -128,10 +126,9 @@ export const fetchV2Stats = async ({
   const contracts = getContracts(provider, deployment);
 
   // Last step of deployment renounces Governance ownership
-  const deployed = await contracts.governance
-    .owner()
-    .then(owner => owner == AddressZero)
-    .catch(() => false);
+  const deployed = true
+
+  console.log("deployed", deployed);
 
   const [total_bold_supply, branches, spV2AverageApys] = await Promise.all([
     // total_bold_supply
